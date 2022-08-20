@@ -98,7 +98,9 @@ contract DEX {
      * if you are using a mapping liquidity, then you can use `return liquidity[lp]` to get the liquidity for a user.
      *
      */
-    function getLiquidity(address lp) public view returns (uint256) {}
+    function getLiquidity(address lp) public view returns (uint256) {
+        return liquidity[lp];
+    }
 
     /**
      * @notice sends Ether to DEX in exchange for $BAL
@@ -107,7 +109,7 @@ contract DEX {
         require(msg.value > 0, "ETH should be more than zero...");
         uint256 ethReserve = address(this).balance.sub(msg.value);
         uint256 tokenReserve = token.balanceOf(address(this));
-        uint256 tokenOutput = price(msg.value, ethReserve, tokenReserve);
+        tokenOutput = price(msg.value, ethReserve, tokenReserve);
 
         require(
             token.transfer(msg.sender, tokenOutput),
@@ -126,7 +128,7 @@ contract DEX {
      * @notice sends $BAL tokens to DEX in exchange for Ether
      */
     function tokenToEth(uint256 tokenInput) public returns (uint256 ethOutput) {
-        require(tokenInput > 0, "Token input should be more than 0.");
+        require(tokenInput > 0, "Token input should be more than 0 to swap!.");
         uint256 tokenReserve = token.balanceOf(address(this));
         uint256 ethReserve = address(this).balance;
         ethOutput = price(tokenInput, tokenReserve, ethReserve);
